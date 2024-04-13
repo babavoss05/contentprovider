@@ -27,15 +27,95 @@ Step 6: Get contacts details and Display details give in MainActivity file.
 Step 7: Save and run the application.
 
 ## PROGRAM:
+
+
+Program to print the contact name and phone number using content providers.<br>
+Developed by: Gokul <br>
+Registeration Number : 212221220013 <br>
+### ActivityMain.xml
+``` java
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="200dp"
+        android:layout_marginBottom="483dp"
+        android:onClick="btnGetContacts"
+        android:text="Get Contacts Details" />
+
+</RelativeLayout>
 ```
-/*
-Program to print the contact name and phone number using content providers.
-Developed by:
-Registeration Number :
-*/
+### MainActivity.Java:
+``` java
+
+package com.example.contentprovider;
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.ContentResolver;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Bundle;
+import android.provider.ContactsContract;
+import android.util.Log;
+import android.view.View;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+
+    }
+    public void btnGetContacts(View v){
+        getPhoneContacts();
+    }
+    private void getPhoneContacts(){
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS)!= PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_CONTACTS},0);
+        }
+        ContentResolver contentResolver = getContentResolver();
+        Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+        Cursor cursor = contentResolver.query(uri,null,null,null,null,null);
+        Log.i("CONTACT_PROVIDER","TOTAL # of CONTACTS ::: "+Integer.toString(cursor.getCount()));
+
+        if(cursor.getCount()>0){
+            while(cursor.moveToNext()){
+                @SuppressLint("Range") String ContactName = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                @SuppressLint("Range") String contactNumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                Log.i("CONTACT_PROVIDER_DEMO","Contact Name ::: "+ ContactName+" - "+contactNumber);
+            }
+        }
+
+
+    }
+}
 ```
 
-## OUTPUT
+
+
+## OUTPUT:
+![image](https://github.com/Thirualpha/contentprovider/assets/113031702/1ff15c07-9927-4e41-9307-72f187c724a3)
+
+
+![image](https://github.com/Thirualpha/contentprovider/assets/113031702/9f35ca7e-099c-488b-a55c-ac077ad37b3c)
 
 
 
